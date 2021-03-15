@@ -1,0 +1,15 @@
+.signup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    .form-wrapper {
+        width: 65%;
+        display: flex;
+        flex-flow: column;
+    }
+    .signup-alert {
+        margin: 1rem 0;
+    }
+
+}
