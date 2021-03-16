@@ -62,7 +62,7 @@ const GetPosts = async () => {
          snapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, " => ", doc.data());
-            posts.push(doc.data())
+            posts.push({...doc.data() , docID: doc.id})
         });
     })
     console.log('posts = ', posts)
@@ -76,7 +76,7 @@ const GetUsers = async () => {
          snapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, " => ", doc.data());
-            users.push(doc.data())
+            users.push({...doc.data()})
         });
     })
     console.log('users = ', users)
@@ -89,22 +89,37 @@ const SavePost = async (postTxt) => {
     const postData  = {
         postID: uuidv4(),
         postTxt: postTxt,
-        postBy: userDetails.displaName || userDetails.email.split('@')[0]
+        postBy: userDetails.displaName || userDetails.email.split('@')[0],
+        createdDate: new Date().toLocaleString(),
+        reply: []
     }
     const savePostToDB =  await firebase.firestore().collection('savedPosts').add(postData)
-//    then(snapshot => {
-//         snapshot.forEach((doc) => {
-//            // doc.data() is never undefined for query doc snapshots
-//            // console.log(doc.id, " => ", doc.data());
-//            users.push(doc.data())
-//        });
-//    })
    console.log('savePostToDB = ', savePostToDB)
-//    return savePostToDB
     if(savePostToDB) {
         return postData
     }
 }
+
+const SaveReplyINPost = async (docID, replyTxt) => {
+    console.log('docID = ', docID);
+    const userDetails = GetLocalStorage('userDetails');
+    const replyData  = {
+        replyID: uuidv4(),
+        replyTxt: replyTxt,
+        replyBy: userDetails.displaName || userDetails.email.split('@')[0],
+        replyTime: new Date().toLocaleString()
+    }
+     const updateReplyToDB =  await firebase.firestore().collection('savedPosts').doc(docID).update({
+         reply: firebase.firestore.FieldValue.arrayUnion(replyData)
+     }).then(response => {
+         console.log(response)
+     })
+     
+    console.log('savePostToDB = ', updateReplyToDB)
+     if(updateReplyToDB) {
+         return replyData
+     }
+ }
 
 export {
     LoginUser,
@@ -114,5 +129,6 @@ export {
     GeneratePushNotification,
     GetUsers,
     GetPosts,
-    SavePost
+    SavePost,
+    SaveReplyINPost
     }

@@ -1,0 +1,27 @@
+.home-page {
+    .main-panel {
+        height: 100%;
+        .new-post-container{
+            margin: 1rem 0;
+            .input-group{
+                textarea {
+                    resize: none;
+                }
+                .input-group-append{
+                    cursor: pointer;
+                    .input-group-text{
+                        font-weight: 700;
+                        .fa-plus {
+                            margin-left: .3rem;
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+    .sidebar-panel {
+        height: 100%;
+
+    }
+}
