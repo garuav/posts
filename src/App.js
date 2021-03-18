@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import firebase from 'firebase';
 import { FIREBASEREFS } from './utils/common/common.constant'
 import { GeneratePushNotification, GetLocalStorage, SetLocalStorage} from './utils/firebase/service'
+import { Provider } from 'react-redux';
+import store from './utils/redux/store';
 
 (function () {
   firebase.initializeApp(FIREBASEREFS.firebaseConfig);
@@ -25,10 +27,12 @@ function App() {
     firebase.analytics();
   }, [])
   return (
+    <Provider store={store}>
      <Container fluid>
        <Routes></Routes>
       {/* <Login /> */}
     </Container>
+    </Provider>
   );
 }
 
