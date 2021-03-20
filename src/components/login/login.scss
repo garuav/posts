@@ -1,0 +1,26 @@
+.login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    .form-wrapper {
+            width: 65%;
+            display: flex;
+            flex-flow: column;
+        }
+        .button-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-flow: column;
+                h6 {
+                    margin: .5rem 0 0 0;
+                }
+                p {
+                    margin: 0;
+                    cursor: pointer;
+                    color: rgb(54, 54, 214);
+                }
+            
+            }
+}
