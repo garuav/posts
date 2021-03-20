@@ -1,21 +1,23 @@
 import React, { useState} from 'react'
 import {Button, Form, Container, Alert} from 'react-bootstrap'
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import './signup.scss'
 import {RegisterUser} from '../../utils/firebase/service'
 // import ToastComponent from '../toast/toast'
 // import { toastDefaultConfig } from '../../utils/common/common.constant'
 
 const Register = () => {
+    const history = useHistory();
     const [registerForm, setRegisterForm] = useState({email: '', password: '', confirmPassword: ''})
     const [error,setError] = useState('');
+    const [inValidForm, setValidation] = useState(true);
     // const [showToast, setToast] = useState(false)
         const  registerHandler = () => {
             
             console.log('registerForm ', {...registerForm})
             RegisterUser(registerForm).then(response => {
                 console.log('response = ',response)
-
+                history.push('/home')
             }).catch(error => {
                 console.log('error = ',error)
                 switch (error) {
@@ -37,7 +39,16 @@ const Register = () => {
             })
         }   
  
-    
+        const confirmPasswordHandler = (e) => {
+            setRegisterForm({...registerForm, confirmPassword: e.target.value})
+            if(registerForm.password !== e.target.value) {
+                setError('Password Mismatch')
+                setValidation(true);
+            } else {
+                setError('')
+                setValidation(false);
+            }
+        } 
     return (
         <>
         <Container className="signup">
@@ -55,11 +66,11 @@ const Register = () => {
         </Form.Group>
         <Form.Group controlId="formBasicConfirmPassword">
             <Form.Label>Confirm Password </Form.Label>
-            <Form.Control type="password" placeholder="Enter password" value={registerForm.confirmPassword}  onChange={e => setRegisterForm({...registerForm, confirmPassword: e.target.value})}/>
+            <Form.Control type="password" placeholder="Enter password" value={registerForm.confirmPassword}  onChange={ confirmPasswordHandler}/>
             
         </Form.Group>
         <div className="button-container">
-        <Button variant="primary" onClick={registerHandler}>Register</Button>
+        <Button variant="primary" onClick={registerHandler} disabled={inValidForm}>Register</Button>
             <Link to="/login">
             <p >Already Registered? Continue with Login</p>
             </Link>

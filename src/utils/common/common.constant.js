@@ -10,7 +10,8 @@
         measurementId: "G-X0H49W503C"
       },
       WEBPushCertificate: `BHxCFGFUdqaDUvSO5hwOF-ikFvy1xEtKSaaYGKP0QIFHbgAg-tDgUaJjs0pvbK-6azF-63iSfgwMkNiDdCI7Xr8`,
-    DB: `https://post-8d806-default-rtdb.firebaseio.com/` 
+    DB: `https://post-8d806-default-rtdb.firebaseio.com/`,
+    serverKey: `AAAA0db60-A:APA91bE_BWua11s1BhwD7_j1mmoFCKD4RUyh4dSGFLZmNh3v3ezNsuGQ2eNQUlXNfs2wILmAkSVU73w0eV6_9rRaqdYgALumMlEornQiXVT_XpgfIND8dj6qdew__bPws5hKXlFemMFB`
 }
 
 const toastDefaultConfig = {

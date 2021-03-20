@@ -1,0 +1,30 @@
+.new-post-container{
+    margin: 1rem 0;
+    .input-group{
+        textarea {
+            resize: none;
+        }
+        .input-group-append{
+            cursor: pointer;
+            .input-group-text{
+                font-weight: 700;
+                color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+                .fa-plus {
+                    margin-left: .3rem;
+                }
+                
+            }
+            &.disable-btn-style{
+                pointer-events: none;
+                .input-group-text{
+                color: #6c6767;
+                background-color: #cdcdcd;
+                border-color: #cdcdcd;
+                }
+            }
+        }
+    }
+    
+}

@@ -1,0 +1,57 @@
+.message-box {
+    position: absolute;
+    bottom: 2rem;
+    .header {
+        display: flex;
+    justify-content: space-between;
+    padding: .5rem;
+    background: #407a9e;
+    color: #fff;
+    align-items: center;
+    h6{
+        margin: 0;
+    }
+    .close-icon{
+        color: #fff;
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: .7rem;
+        padding: .2rem;
+    background-color: #261f39;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    }
+    }
+    .card-body {
+        padding: .5rem;
+        .new-message-container {
+            display: flex;
+    align-items: center;
+    position: relative;
+    textarea {
+        resize: none;
+
+}
+.send-icon{
+    color: #fff;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: .7rem;
+    padding: .2rem;
+background-color: #261f39;
+border-radius: 50%;
+display: flex;
+justify-content: center;
+align-items: center;
+position: absolute;
+right: 1rem;
+cursor: pointer;
+}
+        }
+       
+    }
+}

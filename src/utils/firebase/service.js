@@ -62,10 +62,9 @@ const GetPosts = async () => {
          snapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, " => ", doc.data());
-            posts.push({...doc.data() , docID: doc.id})
+            posts.push({...doc.data() , docID: doc.id, replyTxtValue: ''})
         });
     })
-    console.log('posts = ', posts)
     return posts
 }
 
@@ -76,15 +75,13 @@ const GetUsers = async () => {
          snapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, " => ", doc.data());
-            users.push({...doc.data()})
+            users.push({...doc.data(), docID: doc.id})
         });
     })
-    console.log('users = ', users)
     return users
 }
 
 const SavePost = async (postTxt) => {
-   console.log('uuid = ', );
    const userDetails = GetLocalStorage('userDetails');
     const postData  = {
         postID: uuidv4(),
@@ -94,9 +91,8 @@ const SavePost = async (postTxt) => {
         reply: []
     }
     const savePostToDB =  await firebase.firestore().collection('savedPosts').add(postData)
-   console.log('savePostToDB = ', savePostToDB)
     if(savePostToDB) {
-        return postData
+        return {...postData, docID: savePostToDB.id}
     }
 }
 
@@ -109,17 +105,79 @@ const SaveReplyINPost = async (docID, replyTxt) => {
         replyBy: userDetails.displaName || userDetails.email.split('@')[0],
         replyTime: new Date().toLocaleString()
     }
-     const updateReplyToDB =  await firebase.firestore().collection('savedPosts').doc(docID).update({
-         reply: firebase.firestore.FieldValue.arrayUnion(replyData)
-     }).then(response => {
-         console.log(response)
-     })
      
-    console.log('savePostToDB = ', updateReplyToDB)
-     if(updateReplyToDB) {
-         return replyData
+     try  {
+          await firebase.firestore().collection('savedPosts').doc(docID).update({
+            reply: firebase.firestore.FieldValue.arrayUnion(replyData)
+        })
+        return replyData
+     } catch (error) {
+
      }
  }
+
+ const SendNotification = async (payloadData) => {
+    const userDetails = GetLocalStorage('userDetails');
+    const payload = {
+        registration_ids: [payloadData.token],
+        data: {
+          title: payloadData.title,
+          body: payloadData.body,
+          object_id: Math.round(Math.random() * (99999 - 0 + 1)) + 0,
+          icon: '../../favicon.ico',
+          objectType: payloadData.objectType,
+          UID: userDetails.UID,
+        //   registration_token: data.registration_token || '',
+          dateTime: new Date()
+        },
+        content_available: true
+    }
+    try {
+       const notificationResponse =  await fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'post',
+            headers: {'Content-Type':'application/json' ,  'Authorization': `key=${FIREBASEREFS.serverKey}`},
+               body: JSON.stringify({...payload})
+           }).then(res => res.json())
+         console.log('notificationResponse = ',notificationResponse)
+         if(notificationResponse && notificationResponse.success) {
+            //  SaveMessageToDB()
+            // const messageData = {
+            //     senderUID: userDetails.UID,
+            //     receiverUID: payloadData.UID,
+            //     dateTime: payload.data.dateTime,
+            //     message: payload.data.body,
+            //     chatID: uuidv4()
+            // }
+            // const chatMessageResponse =   await firebase.firestore().collection('chatMessages').add({})
+            // console.log('chatMessageResponse = ',chatMessageResponse)
+            // if(payloadData.docID) {
+            //     const chatMessageResponse =   await firebase.firestore().collection('chatMessages').doc(payloadData.docID).add(messageData)
+            //     console.log('chatMessageResponse = ',chatMessageResponse)
+            // } else {
+            //     const chatMessageResponse =   await firebase.firestore().collection('chatMessages').add(messageData)
+            //     const chatMessageResponse =   await firebase.firestore().collection('chatMessages').doc(payloadData.docID).add(messageData)
+            //     console.log('chatMessageResponse = ',chatMessageResponse)
+            //     console.log('chatMessageResponse = ',chatMessageResponse)
+            // }
+          
+         }
+
+     } catch (err) {
+         console.log('error = ',err)
+     }
+    }
+   
+const DeletePosts = async (docID) => {
+        try {
+          const deletePost =   await firebase.firestore().collection('savedPosts').doc(docID).get();
+          console.log('delete  Post = ', deletePost)
+         await deletePost.ref.delete()
+         return deletePost.ref
+          
+        }catch(err) {
+            console.log(err)
+        }
+    }
 
 export {
     LoginUser,
@@ -130,5 +188,7 @@ export {
     GetUsers,
     GetPosts,
     SavePost,
-    SaveReplyINPost
+    SaveReplyINPost,
+    SendNotification,
+    DeletePosts
     }
